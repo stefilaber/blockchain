@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Balance</title>
+        <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+        <script type="application/javascript">
+            function showBalance(){
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+            provider.send("eth_requestAccounts", []).then(()=>{
+
+                const daiAddress = "0x32dcfa969333e661cefdfc2c871cb650b36023e0";
+
+                const daiAbi = [
+                    "function name() view returns (string)",
+                    "function symbol() view returns (string)",
+                    
+                    "function balanceOf(address) view returns (uint)",
+                    
+                    "function transfer(address to, uint amount)",
+                    
+                    "event Transfer(address indexed from, address indexed to, uint amount)"
+                ];
+                
+                const daiContract = new ethers.Contract(daiAddress, daiAbi, provider);
+                
+                const signer = provider.getSigner();
+                const address = signer.getAddress();
+                
+                console.log("a");
+                
+                daiContract.balanceOf(address).then(balance => {
+                    //Format the DAI for displaying to the user
+                    
+                    document.getElementById("blockID").innerHTML = ethers.utils.formatUnits(balance.toString(), 18);
+                })
+            });
+        }
+        </script>
+</head>
+<body>
+    <button onclick="showBalance()"> Click here! </button>
+    <h1 id="blockID"></h1>
+</body>
+</html>
